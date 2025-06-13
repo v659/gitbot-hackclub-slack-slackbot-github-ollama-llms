@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Environment Variables
+.env
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Logs and system files
+*.log
+*.sqlite3
+*.db
+
+# Byte-compiled / cache
+*.swp
+*.swo
+
+# Jupyter Notebook
+.ipynb_checkpoints/
