@@ -5,6 +5,7 @@ import os, certifi
 import re
 import ollama
 from dotenv import load_dotenv
+from deep_translator import GoogleTranslator
 load_dotenv()  # This loads environment variables from .env
 
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
@@ -18,6 +19,12 @@ app = App(token=SLACK_BOT_TOKEN)
 # In-memory user session (you can use a DB instead)
 user_sessions = {}
 
+def translate_text(text, target='en'):
+    try:
+        translated = GoogleTranslator(source='auto', target=target).translate(text)
+        return translated
+    except Exception as e:
+        return f"⚠️ Translation error: {e}"
 
 # Trigger command
 @app.message("my repos")
@@ -125,23 +132,81 @@ def handle_public_whoami(ack, body, client, respond):
 
 
 
+@app.command("/translate")
+def handle_translate_command(ack, respond, command):
+    ack()
+
+    text = command.get("text", "")
+    if not text:
+        respond("❗ Please provide text to translate. Example: `/translate Bonjour le monde`")
+        return
+
+    try:
+        translated = GoogleTranslator(source='auto', target='en').translate(text)
+        respond(f"🌍 *Translation:*\n> `{translated}`")
+    except Exception as e:
+        respond(f"⚠️ Error translating: `{e}`")
+
+
+
+@app.command("/trans-public")
+def handle_trans_public(ack, body, client, respond):
+    ack()
+
+    user_id = body["user_id"]
+    channel_id = body["channel_id"]
+    text = body.get("text", "").strip()
+
+    if not text:
+        respond("❌ Usage: `/trans-public [language_code] [text]` (e.g., `/trans-public en Bonjour le monde`)")
+        return
+
+    try:
+        parts = text.split(" ", 1)
+        if len(parts) != 2:
+            respond("❌ Please provide a language code and the text to translate.")
+            return
+
+        lang, to_translate = parts
+        translated = GoogleTranslator(source="auto", target=lang).translate(to_translate)
+
+        client.chat_postMessage(
+            channel=channel_id,
+            text=(
+                f"🌍 <@{user_id}> said:\n> `{to_translate}`\n"
+                f"🔁 Translated to *{lang}*:\n> `{translated}`"
+            )
+        )
+    except Exception as e:
+        respond(f"⚠️ Translation error: `{e}`")
+
 
 @app.event("app_mention")
-def handle_app_mention(body, say):
+def handle_app_mention(body, say, logger):
     user = body["event"]["user"]
     text = body["event"]["text"]
 
-    # Strip the bot mention to get clean prompt
-    cleaned_text = re.sub(r"<@[^>]+>\s*", "", text).strip()
+    # Strip the bot mention to extract clean prompt
+    cleaned_text = translate_text(re.sub(r"<@[^>]+>\s*", "", text).strip())
+    logger.info(f"[MENTION] From user {user}: '{cleaned_text}'")
 
-    say(f"🧠 LLaMA3 is thinking...\n> `{cleaned_text}`")
+    say("🤔 Thinking...")
+
     try:
-        response = ollama.chat(model='llama3.2', messages=[
-            {'role': 'user', 'content': cleaned_text}
-        ])
-        say(response['message']['content'])
+        response = ollama.chat(
+            model='llama3.2',
+            messages=[{'role': 'user', 'content': cleaned_text}]
+        )
+        content = response.get("message", {}).get("content", None)
+        if content:
+            say(content)
+        else:
+            logger.warning("Ollama response missing 'message.content'")
+            say("⚠️ LLaMA didn’t reply as expected.")
+
     except Exception as e:
-        say(f"⚠️ Error: `{e}`")
+        logger.error(f"Ollama call failed: {e}")
+        say(f"⚠️ Error talking to LLaMA: `{e}`")
 
 # Start the bot
 if __name__ == "__main__":
