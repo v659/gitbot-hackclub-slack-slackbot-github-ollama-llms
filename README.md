@@ -15,7 +15,7 @@ Built with Python, Slack Bolt, Flask, and Ollama.
 ## 📦 Features
 
 - `/slack-me`: Get detailed info about yourself on Slack.
--`/slack-me-public`: Everyone can see your slack info
+-`/slack-me-public`: Everyone can see your slack info.
 - `my repos`: Ask the bot to show your top GitHub repos.
 - `@gitBot [prompt]`: Have a conversation with a local Ollama LLM.
 - `/translate`: Translate any message 
