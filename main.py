@@ -64,16 +64,6 @@ def handle_message(message, say):
         say(result)
         return
 
-    # --- OLLAMA (default fallback) ---
-    try:
-        say(f"💬 LLaMA3 is thinking...\n> `{text}`")
-        response = ollama.chat(model='llama3.2', messages=[
-            {'role': 'user', 'content': text}
-        ])
-        say(response['message']['content'])
-    except Exception as e:
-        say(f"⚠️ Error talking to LLaMA: `{e}`")
-
 @app.command("/slack-me")
 def handle_whoami_command(ack, body, client, respond):
     ack()  # Acknowledge the slash command immediately

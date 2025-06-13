@@ -1,0 +1,6 @@
+slack_bolt>=1.18.0
+slack_sdk>=3.21.3
+requests>=2.31.0
+python-dotenv>=1.0.1
+Flask>=2.2.5
+ollama>=0.1.6
