@@ -59,7 +59,7 @@ SLACK_APP_TOKEN=xapp-your-slack-app-level-token
 ### 4. Install dependencies
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirments.txt
 ```
 
 ### 5. Run your bot
