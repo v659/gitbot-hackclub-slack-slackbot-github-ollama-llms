@@ -7,6 +7,7 @@ GitBot is a Slack bot that can:
 - 🤖 Chat with a local Ollama-powered LLM (like LLaMA3)
 - 👤 Display Slack user info via a `/slack-me` slash command
 - 🎙️ Translate messages using deep-translator
+- 🤓 Many personalities
 
 Built with Python, Slack Bolt, Flask, and Ollama.
 
@@ -15,11 +16,12 @@ Built with Python, Slack Bolt, Flask, and Ollama.
 ## 📦 Features
 
 - `/slack-me`: Get detailed info about yourself on Slack.
--`/slack-me-public`: Everyone can see your slack info.
+- `/slack-me-public`: Everyone can see your slack info.
 - `my repos`: Ask the bot to show your top GitHub repos.
 - `@gitBot [prompt]`: Have a conversation with a local Ollama LLM.
 - `/translate`: Translate any message 
 - `/trans-public`: Everyone sees the translation
+- `/change-personality`: Changes bot personality
 
 ---
 

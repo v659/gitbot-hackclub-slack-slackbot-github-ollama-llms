@@ -6,6 +6,10 @@ import re
 import ollama
 from dotenv import load_dotenv
 from deep_translator import GoogleTranslator
+from personalities import personalities
+
+user_personalities = {}
+
 load_dotenv()  # This loads environment variables from .env
 
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
@@ -18,6 +22,21 @@ app = App(token=SLACK_BOT_TOKEN)
 
 # In-memory user session (you can use a DB instead)
 user_sessions = {}
+
+@app.command("/change-personality")
+def change_personality(ack, respond, body):
+    ack()
+    user_id = body["user_id"]
+    text = body.get("text", "").strip().lower()
+
+    if text not in personalities:
+        available = ", ".join(personalities.keys())
+        respond(f"⚠️ Unknown personality. Try one of: `{available}`")
+        return
+
+    user_personalities[user_id] = text
+    respond(f"🎭 Personality changed to *{text}* for <@{user_id}>.")
+
 
 def translate_text(text, target='en'):
     try:
@@ -190,12 +209,23 @@ def handle_app_mention(body, say, logger):
     cleaned_text = translate_text(re.sub(r"<@[^>]+>\s*", "", text).strip())
     logger.info(f"[MENTION] From user {user}: '{cleaned_text}'")
 
-    say("🤔 Thinking...")
+    # Handle 'my repos' directly
+    if cleaned_text.lower() == 'my repos':
+        return  # Handled elsewhere
+
+    # Determine personality
+    personality = user_personalities.get(user, "default")
+    system_prompt_text = personalities.get(personality, personalities["default"])["system_prompt"]
+
+    say(f"🤖 (*{personality}*) Thinking...")
 
     try:
         response = ollama.chat(
-            model='llama3.2',
-            messages=[{'role': 'user', 'content': cleaned_text}]
+            model='teen-bot',
+            messages=[
+                {'role': 'system', 'content': system_prompt_text},
+                {'role': 'user', 'content': cleaned_text}
+            ]
         )
         content = response.get("message", {}).get("content", None)
         if content:
@@ -207,6 +237,8 @@ def handle_app_mention(body, say, logger):
     except Exception as e:
         logger.error(f"Ollama call failed: {e}")
         say(f"⚠️ Error talking to LLaMA: `{e}`")
+
+
 
 # Start the bot
 if __name__ == "__main__":
