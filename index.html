@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitBot Slack Bot</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+  <header class="bg-blue-800 text-white p-6 shadow">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">GitBot for Slack</h1>
+      <a href="https://github.com/v659/gitbot-hackclub-slack-slackbot-github-ollama-llms" target="_blank"
+        class="bg-white text-blue-800 px-4 py-2 rounded hover:bg-gray-100 font-medium">GitHub Repo</a>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-10">
+    <section class="mb-10">
+      <h2 class="text-3xl font-semibold mb-4">🤖 What is GitBot?</h2>
+      <p class="text-lg mb-2">GitBot is an AI-powered Slackbot built using Python, Slack Bolt, Ollama, and GitHub’s public API.</p>
+      <p class="text-lg">It supports live conversations, user personalities, multilingual translation, and GitHub integration.</p>
+    </section>
+
+    <section class="mb-10">
+      <h3 class="text-2xl font-semibold mb-3">⚙️ Slash Commands</h3>
+      <ul class="list-disc list-inside space-y-2">
+        <li><code>/change-personality [name]</code> – Set the bot's persona</li>
+        <li><code>/slack-me</code> – Get your Slack user info privately</li>
+        <li><code>/slack-me-public</code> – Post your Slack user info publicly</li>
+        <li><code>/translate [text]</code> – Translate text to English</li>
+        <li><code>/trans-public [lang_code] [text]</code> – Publicly translate a message</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h3 class="text-2xl font-semibold mb-3">📦 Features</h3>
+      <ul class="list-disc list-inside space-y-2">
+        <li>Responds to mentions using <strong>Ollama</strong> models</li>
+        <li>Integrates with the <strong>GitHub API</strong> to fetch top repos</li>
+        <li>Supports multi-language translation using Google Translate API</li>
+        <li>Changeable personalities via system prompts</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h3 class="text-2xl font-semibold mb-3">🧠 LLM Models Used</h3>
+      <ul class="list-disc list-inside space-y-2">
+        <li><strong>Ollama:</strong> Chat models (e.g., teen-bot)</li>
+        <li><strong>Google Translate:</strong> via Deep Translator</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h3 class="text-2xl font-semibold mb-3">🚀 How to Run Locally Forever</h3>
+      <pre class="bg-gray-200 p-4 rounded text-sm overflow-x-auto">
+nohup python3 main.py &
+      </pre>
+      <p class="text-sm mt-2 text-gray-600">This keeps the bot running in the background and logs output to <code>nohup.out</code>.</p>
+    </section>
+
+    <section class="mb-10">
+      <h3 class="text-2xl font-semibold mb-3">🔗 GitHub</h3>
+      <p>View full source code here: <a href="https://github.com/v659/gitbot-hackclub-slack-slackbot-github-ollama-llms"
+          class="text-blue-600 underline" target="_blank">github.com/v659/gitbot-hackclub-slack-slackbot-github-ollama-llms</a></p>
+    </section>
+  </main>
+
+  <footer class="bg-blue-800 text-white text-center p-4">
+    © 2025 GitBot by v659 — Made with Slack, Python & ❤️
+  </footer>
+</body>
+
+</html>
