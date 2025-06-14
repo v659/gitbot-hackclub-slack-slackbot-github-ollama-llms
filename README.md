@@ -89,4 +89,10 @@ python main.py
  python test_llm.py
  ```
 
- 
+ ### To run the bot 24/7:
+
+ ```bash
+ nohup python3 main.py &
+```
+
+Now the bot runs even if your computer is shut or code is terminated
