@@ -205,15 +205,18 @@ def handle_app_mention(body, say, logger):
     user = body["event"]["user"]
     text = body["event"]["text"]
 
-    # Strip the bot mention to extract clean prompt
-    cleaned_text = translate_text(re.sub(r"<@[^>]+>\s*", "", text).strip())
-    logger.info(f"[MENTION] From user {user}: '{cleaned_text}'")
+    # Strip bot mention and clean input
+    cleaned_text = re.sub(r"<@[^>]+>\s*", "", text).strip()
+    logger.info(f"[MENTION] {user}: '{cleaned_text}'")
 
-    # Handle 'my repos' directly
-    if cleaned_text.lower() == 'my repos':
-        return  # Handled elsewhere
+    # Always reply, no matter what the message
+    if not cleaned_text:
+        say("🤖 I heard you, but didn't catch what you said. Try saying something?")
+        return
 
-    # Determine personality
+    translated_text = translate_text(cleaned_text)
+
+    # Process with personality
     personality = user_personalities.get(user, "default")
     system_prompt_text = personalities.get(personality, personalities["default"])["system_prompt"]
 
@@ -224,19 +227,18 @@ def handle_app_mention(body, say, logger):
             model='teen-bot',
             messages=[
                 {'role': 'system', 'content': system_prompt_text},
-                {'role': 'user', 'content': cleaned_text}
+                {'role': 'user', 'content': translated_text}
             ]
         )
         content = response.get("message", {}).get("content", None)
         if content:
             say(content)
         else:
-            logger.warning("Ollama response missing 'message.content'")
-            say("⚠️ LLaMA didn’t reply as expected.")
-
+            say("⚠️ My brain froze for a second. Try again?")
     except Exception as e:
         logger.error(f"Ollama call failed: {e}")
         say(f"⚠️ Error talking to LLaMA: `{e}`")
+
 
 
 
